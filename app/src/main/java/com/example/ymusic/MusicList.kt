@@ -1,33 +1,22 @@
 package com.example.ymusic
 
+import android.content.ContentValues
 import android.os.Environment
 import android.util.Log
 import android.widget.Toast
 import com.hjq.permissions.OnPermission
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
+import org.json.JSONArray
 import java.io.File
 
 
 object MusicList {
-    var theMusicList= getMusicList()
+    var theMusicList: MutableList<Music> = mutableListOf()
 
-    public fun sdCardIsAvailable():Boolean {
-        //首先判断外部存储是否可用
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            var sd: File = File(Environment.getExternalStorageDirectory().getPath());
-            Log.v("msg", "sd = " + sd);//sd = /storage/emulated/0
-            return sd.canRead()
-        } else {
-            return false;
-        }
-    }
 
     fun getMusicList():MutableList<Music>{
         //获取音乐列表
-        if(!sdCardIsAvailable()){
-            MainActivity().getExternalStoragePermission()
-        }
 
         val fileList: MutableList<Music> = mutableListOf()
         //val fileNames: MutableList<String> = mutableListOf()
@@ -45,7 +34,51 @@ object MusicList {
         }
 
         Log.d("msg", "getMusicList")
-        //Toast.makeText(this,"getMusicList",Toast.LENGTH_SHORT).show()
         return fileList
     }
+    fun getTheMusicListFromDb():MutableList<Music>{
+        val fileList: MutableList<Music> = mutableListOf()
+        return fileList
+    }
+    fun enCodeMusicListToString (musicList:MutableList<Music>):String{
+        val temp= JSONArray()
+        for (music in musicList){
+            temp.put(music.path)
+        }
+        val pathList=temp.toString()
+        return pathList
+    }
+
+    fun deCodeMusicList(string:String):MutableList<Music>{
+        val temp= JSONArray(string)
+        val musicList: MutableList<Music> = mutableListOf()
+        for (i in 0 until temp.length()){
+            musicList.add(Music(temp[i].toString()))
+        }
+        return musicList
+    }
+
+    fun updateLocalMusicList(dbHelper: MyDatabaseHelper){
+        theMusicList=getMusicList()
+        val db=dbHelper.writableDatabase
+
+        db.delete("MusicList","name=?", arrayOf("本地音乐"))
+        Log.d("msg","delete成功")
+        val pathList= enCodeMusicListToString(MusicList.theMusicList)
+        val value=ContentValues().apply {
+            put("name","本地音乐")
+            put("pathList",pathList)
+        }
+        db.insert("MusicList",null,value)
+        Log.d("msg","insert成功")
+    }
+
+    fun loadLocalMusicList(dbHelper: MyDatabaseHelper){
+        val db=dbHelper.writableDatabase
+        val cursor=db.query("MusicList", arrayOf("name","pathList"),"name=?", arrayOf("本地音乐"),null,null,null)
+        cursor.moveToFirst()
+        val pathList=cursor.getString(cursor.getColumnIndex("pathList"))
+        theMusicList=deCodeMusicList(pathList)
+    }
 }
+

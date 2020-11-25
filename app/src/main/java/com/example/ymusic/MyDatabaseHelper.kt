@@ -17,5 +17,7 @@ class MyDatabaseHelper(val context: Context, name:String, version:Int): SQLiteOp
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        db.execSQL("drop table if exists MusicList")
+        onCreate(db)
     }
 }
