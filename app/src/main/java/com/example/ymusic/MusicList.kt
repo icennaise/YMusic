@@ -1,20 +1,22 @@
 package com.example.ymusic
 
 import android.content.ContentValues
-import android.os.Environment
+import android.media.MediaPlayer
 import android.util.Log
-import android.widget.Toast
-import com.hjq.permissions.OnPermission
-import com.hjq.permissions.Permission
-import com.hjq.permissions.XXPermissions
 import org.json.JSONArray
-import java.io.File
+import java.lang.Exception
+import java.text.ParsePosition
 
 
 object MusicList {
     var theMusicList: MutableList<Music> = mutableListOf()
-
-
+    var nowPlaying= Music("")
+    val mediaPlayer= MediaPlayer()
+    init {
+        mediaPlayer.setOnCompletionListener {
+            playNextMusic()
+        }
+    }
     fun getMusicList():MutableList<Music>{
         //获取音乐列表
 
@@ -36,10 +38,12 @@ object MusicList {
         Log.d("msg", "getMusicList")
         return fileList
     }
+
     fun getTheMusicListFromDb():MutableList<Music>{
         val fileList: MutableList<Music> = mutableListOf()
         return fileList
     }
+
     fun enCodeMusicListToString (musicList:MutableList<Music>):String{
         val temp= JSONArray()
         for (music in musicList){
@@ -77,9 +81,69 @@ object MusicList {
         val db=dbHelper.writableDatabase
         val cursor=db.query("MusicList", arrayOf("name","pathList"),"name=?", arrayOf("本地音乐"),null,null,null)
         cursor.moveToFirst()
-        val pathList=cursor.getString(cursor.getColumnIndex("pathList"))
-        cursor.close()
-        theMusicList=deCodeMusicList(pathList)
+        try {
+
+            val pathList=cursor.getString(cursor.getColumnIndex("pathList"))
+            cursor.close()
+            theMusicList=deCodeMusicList(pathList)
+        }catch (e:Exception){
+
+        }
+    }
+
+    fun playLastMusic(){
+        if (nowPlaying.path==""){
+            nowPlaying=theMusicList[0]
+        }
+        var position=theMusicList.indexOf(nowPlaying)
+        if (position==0){
+            position= theMusicList.size-1
+        }else{
+            position-=1
+        }
+        nowPlaying= theMusicList[position]
+        switchMusic()
+    }
+    fun playNextMusic(){
+        if (nowPlaying.path==""){
+            nowPlaying=theMusicList[0]
+        }
+        var position=theMusicList.indexOf(nowPlaying)
+        if (position==theMusicList.size-1){
+            position= 0
+        }else{
+            position+=1
+        }
+        nowPlaying= theMusicList[position]
+        switchMusic()
+    }
+
+    fun playOrPause(){
+        if (mediaPlayer.isPlaying){
+            mediaPlayer.pause()
+        }
+        else if (nowPlaying.path==""){
+            nowPlaying=theMusicList[0]
+            initMediaPlayer(nowPlaying.path)
+            mediaPlayer.start()
+        } else{
+            mediaPlayer.start()
+        }
+    }
+    fun playPosition(musicList: MutableList<Music>, position: Int){
+        theMusicList=musicList
+        nowPlaying= theMusicList[position]
+        switchMusic()
+    }
+    fun initMediaPlayer(path: String){
+        mediaPlayer.setDataSource(path)
+        mediaPlayer.prepare()
+    }
+    fun switchMusic(){
+        mediaPlayer.reset()
+        mediaPlayer.setDataSource(nowPlaying.path)
+        mediaPlayer.prepare()
+        mediaPlayer.start()
     }
 }
 
