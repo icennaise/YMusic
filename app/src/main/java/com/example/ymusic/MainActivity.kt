@@ -44,6 +44,11 @@ open class MainActivity : AppCompatActivity() {
             val intent=Intent(this, MusicRecyclerActivity::class.java)
             startActivity(intent)
         }
+
+        enterMusicList.setOnClickListener {
+            val intent=Intent(this, MusicPlayerActivity::class.java)
+            startActivity(intent)
+        }
     }
 
 

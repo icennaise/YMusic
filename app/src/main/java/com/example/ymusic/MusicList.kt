@@ -78,6 +78,7 @@ object MusicList {
         val cursor=db.query("MusicList", arrayOf("name","pathList"),"name=?", arrayOf("本地音乐"),null,null,null)
         cursor.moveToFirst()
         val pathList=cursor.getString(cursor.getColumnIndex("pathList"))
+        cursor.close()
         theMusicList=deCodeMusicList(pathList)
     }
 }

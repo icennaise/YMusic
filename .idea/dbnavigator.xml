@@ -44,9 +44,7 @@
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files>
-      <object connection-id="14358d55-b3d7-4e1c-b770-bd53ed8898bf" object-ref="schemas/main/tables/MusicList" />
-    </open-files>
+    <open-files />
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="14358d55-b3d7-4e1c-b770-bd53ed8898bf" />
