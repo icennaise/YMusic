@@ -6,6 +6,8 @@ import android.os.Environment
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.ymusic.MusicList.getMusicList
+import com.example.ymusic.MusicList.sdCardIsAvailable
 import com.hjq.permissions.OnPermission
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
@@ -13,7 +15,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 
 
-class MainActivity : AppCompatActivity() {
+open class MainActivity : AppCompatActivity() {
+    //public val amusicList=getMusicList()
+    //public val bmusicList=amusicList
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -26,10 +30,13 @@ class MainActivity : AppCompatActivity() {
             getExternalStoragePermission()
         }
 
+        //val dbHelper=MyDatabaseHelper(this,"MusicList.db",1)
+        //dbHelper.writableDatabase
+
         button.setOnClickListener{
             //查找sdcard目录下的音乐文件并返回fileList
             Toast.makeText(this,"YMusic",Toast.LENGTH_SHORT).show()
-            val list=getMusicList()
+            MusicList.theMusicList=getMusicList()
         }
 
         button2.setOnClickListener{
@@ -46,17 +53,6 @@ class MainActivity : AppCompatActivity() {
         //println(sdCardIsAvailable())
     }
 
-
-    public fun sdCardIsAvailable():Boolean {
-        //首先判断外部存储是否可用
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            var sd:File = File(Environment.getExternalStorageDirectory().getPath());
-            Log.e("qq", "sd = " + sd);//sd = /storage/emulated/0
-            return sd.canWrite()
-        } else {
-            return false;
-        }
-    }
 
     public fun getExternalStoragePermission(){
         //申请外部存储权限的函数
@@ -80,43 +76,4 @@ class MainActivity : AppCompatActivity() {
                 }
             })
     }
-
-    fun getMusicList():MutableList<Music>{
-        //获取音乐列表
-        if(!sdCardIsAvailable()){
-            getExternalStoragePermission()
-        }
-
-        val fileList: MutableList<Music> = mutableListOf()
-        //val fileNames: MutableList<String> = mutableListOf()
-        val fileTree: FileTreeWalk = Music("/sdcard").walk()
-        fileTree.maxDepth(5) //需遍历的目录层次为1，即无须检查子目录
-            .filter { it.isFile } //只挑选文件，不处理文件夹
-            //.filter { it.extension == "flac"  } //选择扩展名为txt的文本文件
-            .filter { it.extension in listOf("flac", "mp3") }//选择扩展名为txt或者mp3的文件
-            .forEach { //fileNames.add(it.name)
-                fileList.add(Music(it))}//循环 处理符合条件的文件
-        //fileNames.forEach(::println)
-
-        for (music in fileList){
-            Log.d("msg", "find music "+music.path)
-        }
-
-        Toast.makeText(this,"getMusicList",Toast.LENGTH_SHORT).show()
-        return fileList
-    }
-
-}
-
-
-fun main(){
-    val fileNames: MutableList<String> = mutableListOf()
-    val fileTree: FileTreeWalk = File("c:\\").walk()
-    //val fileTree: FileTreeWalk = file.walk()
-    fileTree.maxDepth(5) //需遍历的目录层次为1，即无须检查子目录
-        .filter { it.isFile } //只挑选文件，不处理文件夹
-        //.filter { it.extension == "flac"  } //选择扩展名为txt的文本文件
-        .filter { it.extension in listOf("flac", "mp3") }//选择扩展名为txt或者mp4的文件
-        .forEach { fileNames.add(it.name) }//循环 处理符合条件的文件
-    fileNames.forEach(::println)
 }
