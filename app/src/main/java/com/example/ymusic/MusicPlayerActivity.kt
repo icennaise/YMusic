@@ -11,6 +11,7 @@ import com.example.ymusic.MusicList.playLastMusic
 import com.example.ymusic.MusicList.playNextMusic
 import com.example.ymusic.MusicList.playOrPause
 import kotlinx.android.synthetic.main.activity_music_player.*
+import java.lang.Exception
 
 
 class MusicPlayerActivity : AppCompatActivity() {
@@ -56,15 +57,20 @@ class MusicPlayerActivity : AppCompatActivity() {
         }
     }
     fun setInfo(){
-        TitleView.text= nowPlaying.title
-        AblumView.text= nowPlaying.album
-        ArtistView.text= nowPlaying.artist
-        //val tf=Typeface.createFromAsset(,"A-OTF-RyuminPro-Light.otf")
-        val tf = Typeface.createFromAsset(this.assets, "fonts/A-OTF-RyuminPro-Light.otf")
-        TitleView.setTypeface(tf)
-        AblumView.setTypeface(tf)
-        ArtistView.setTypeface(tf)
-        val bitmap = BitmapFactory.decodeByteArray(nowPlaying.artwork.binaryData, 0, nowPlaying.artwork.binaryData.size)
-        ArtworkView.setImageBitmap(bitmap)
+        try {
+            TitleView.text= nowPlaying.title
+            AblumView.text= nowPlaying.album
+            ArtistView.text= nowPlaying.artist
+            //val tf=Typeface.createFromAsset(,"A-OTF-RyuminPro-Light.otf")
+            val tf = Typeface.createFromAsset(this.assets, "fonts/A-OTF-RyuminPro-Light.otf")
+            TitleView.setTypeface(tf)
+            AblumView.setTypeface(tf)
+            ArtistView.setTypeface(tf)
+            val bitmap = BitmapFactory.decodeByteArray(nowPlaying.artwork.binaryData, 0, nowPlaying.artwork.binaryData.size)
+            ArtworkView.setImageBitmap(bitmap)
+    }catch (e:Exception){
+            TitleView.text= nowPlaying.name
+        }
+
     }
 }

@@ -4,6 +4,7 @@ import org.jaudiotagger.audio.flac.FlacFileReader
 import org.jaudiotagger.tag.FieldKey
 import org.jaudiotagger.tag.datatype.Artwork
 import java.io.File
+import java.lang.Exception
 
 //class Music(loc:File):File(loc.path) {
 class Music:File{
@@ -14,12 +15,14 @@ class Music:File{
     var album=""
     var artwork= Artwork()
     init {
-        if(this.isFile()){
+        try{
             val musicTag= FlacFileReader().read(this).tag
             title=musicTag.getFirst(FieldKey.TITLE)
             artist=musicTag.getFirst(FieldKey.ARTIST)
             album=musicTag.getFirst(FieldKey.ALBUM)
             artwork= musicTag.firstArtwork
+        }catch (e:Exception){
+
         }
 
     }
