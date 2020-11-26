@@ -68,9 +68,11 @@ class MusicPlayerActivity : AppCompatActivity() {
             ArtistView.setTypeface(tf)
             val bitmap = BitmapFactory.decodeByteArray(nowPlaying.artwork.binaryData, 0, nowPlaying.artwork.binaryData.size)
             ArtworkView.setImageBitmap(bitmap)
+            playOrPause.setTypeface(tf)
+            lastMusic.setTypeface(tf)
+            nextMusic.setTypeface(tf)
     }catch (e:Exception){
             TitleView.text= nowPlaying.name
         }
-
     }
 }

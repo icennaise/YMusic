@@ -10,7 +10,7 @@
     <TextView
         android:id="@+id/TitleView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:gravity="center|center_horizontal"
         android:textSize="40dp"
         android:text="Title" />
@@ -18,7 +18,7 @@
     <TextView
         android:id="@+id/ArtistView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:gravity="center|center_horizontal"
         android:textSize="20dp"
         android:text="Artist" />
@@ -26,17 +26,15 @@
     <TextView
         android:id="@+id/AblumView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="20dp"
         android:gravity="center|center_horizontal"
         android:textSize="15dp"
         android:text="Album" />
 
     <ImageView
         android:id="@+id/ArtworkView"
-        android:layout_width="1080px"
-        android:layout_height="1080px"
-        android:layout_gravity="center"
-        android:gravity="center|center_horizontal"></ImageView>
+        android:layout_width="match_parent"
+        android:layout_height="400dp"></ImageView>
 
     <androidx.appcompat.widget.LinearLayoutCompat
 
@@ -55,7 +53,7 @@
             android:id="@+id/playOrPause"
             android:layout_width="300px"
             android:layout_height="match_parent"
-            android:text="      播放/暂停      " />
+            android:text="    播放/暂停    " />
 
         <Button
             android:id="@+id/nextMusic"
