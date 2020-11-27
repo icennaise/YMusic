@@ -6,17 +6,17 @@ import android.util.Log
 import org.json.JSONArray
 import java.lang.Exception
 import java.text.ParsePosition
+import java.util.*
 
 
 object MusicList {
     var theMusicList: MutableList<Music> = mutableListOf()
     var nowPlaying= Music("")
     val mediaPlayer= MediaPlayer()
-    init {
-        mediaPlayer.setOnCompletionListener {
-            playNextMusic()
-        }
-    }
+    var playMode=0
+    val playModeStringArray= listOf<String>("顺序播放","单曲循环","随机播放","单曲播放")
+
+    fun isMusic()=(nowPlaying.path!="")
     fun getMusicList():MutableList<Music>{
         //获取音乐列表
 
@@ -82,7 +82,6 @@ object MusicList {
         val cursor=db.query("MusicList", arrayOf("name","pathList"),"name=?", arrayOf("本地音乐"),null,null,null)
         cursor.moveToFirst()
         try {
-
             val pathList=cursor.getString(cursor.getColumnIndex("pathList"))
             cursor.close()
             theMusicList=deCodeMusicList(pathList)
@@ -104,18 +103,38 @@ object MusicList {
         nowPlaying= theMusicList[position]
         switchMusic()
     }
-    fun playNextMusic(){
+    fun playThisMusic(){
         if (nowPlaying.path==""){
             nowPlaying=theMusicList[0]
         }
-        var position=theMusicList.indexOf(nowPlaying)
-        if (position==theMusicList.size-1){
-            position= 0
-        }else{
-            position+=1
-        }
-        nowPlaying= theMusicList[position]
         switchMusic()
+    }
+    fun playNextMusic(){
+        if(playMode==2){
+            playRandomMusic()
+        }
+        else {
+            if (nowPlaying.path==""){
+                nowPlaying=theMusicList[0]
+            }
+            var position=theMusicList.indexOf(nowPlaying)
+            if (position==theMusicList.size-1){
+                position= 0
+            }else{
+                position+=1
+            }
+            nowPlaying= theMusicList[position]
+            switchMusic()
+        }
+    }
+    fun playRandomMusic(){
+        if (theMusicList.size==0)
+            null
+        else {
+            var position= Random().nextInt(theMusicList.size)
+            nowPlaying= theMusicList[position]
+            switchMusic()
+        }
     }
 
     fun playOrPause(){

@@ -20,7 +20,7 @@
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="获取音乐列表"
+        android:text="获取本地音乐列表"
         tools:layout_editor_absoluteX="161dp"
         tools:layout_editor_absoluteY="524dp" />
 
@@ -35,6 +35,6 @@
         android:id="@+id/enterMusicList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="进入列表" />
+        android:text="正在播放" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>
